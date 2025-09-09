@@ -229,3 +229,5 @@ if (!function_exists('smtp_config')) {
         return EmailConfig::getSmtpConfig();
     }
 }
+
+?>
