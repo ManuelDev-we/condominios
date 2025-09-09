@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cyberhole Condominios — CRM</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0d10;
+      --bg2:#0e1217;
+      --card:#12161c;
+      --glass:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.08);
+      --white:#fff;
+      --muted:#d7d7d7;
+      --neon:#7df9ff;       /* cian neón */
+      --neon2:#bd34fe;      /* magenta */
+      --accent:#12f7d6;     /* verde agua */
+      --radius:18px;
+      --shadow:0 15px 40px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(189,52,254,.18), transparent),
+                  radial-gradient(900px 600px at 110% 10%, rgba(18,247,214,.12), transparent),
+                  linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    /* fondo wireframe animado */
+    .grid{
+      position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 48px 48px, 48px 48px;
+      mask-image: radial-gradient(ellipse at 50% 20%, black 50%, transparent 80%);
+      animation: drift 18s linear infinite;
+    }
+    @keyframes drift{
+      0%{background-position:0 0,0 0}
+      100%{background-position:96px 96px,96px 96px}
+    }
+
+    a{color:var(--neon); text-decoration:none}
+    .container{width:min(1200px, 92vw); margin-inline:auto}
+
+    /* Header / Hero */
+    header{
+      padding: 72px 0 30px;
+      position:sticky; top:0; backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(11,13,16,.7), rgba(11,13,16,.2) 70%, transparent);
+      z-index:10; border-bottom:1px solid var(--line);
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+      font-size:.85rem; color:var(--muted)
+    }
+    .badge .dot{width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 0 16px var(--accent)}
+    .hero{
+      padding: 40px 0 70px;
+      display:grid; gap:26px; justify-items:center; text-align:center;
+    }
+    .hero h1{
+      font-size: clamp(2rem, 4.5vw, 3.4rem); line-height:1.1; margin:0;
+      text-shadow: 0 6px 30px rgba(0,0,0,.55);
+    }
+    .neon{
+      background: linear-gradient(90deg, var(--neon), var(--neon2), var(--accent));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter: drop-shadow(0 0 18px rgba(125,249,255,.2));
+    }
+    .hero p{
+      color:var(--muted);
+      font-size: clamp(1rem,1.4vw,1.15rem);
+      max-width: 900px; margin: 8px auto 0;
+    }
+    .cta{
+      display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:16px;
+    }
+    .btn{
+      appearance:none; border:none; cursor:pointer;
+      padding:14px 20px; border-radius:14px; font-weight:700; letter-spacing:.3px;
+      transition:.2s transform ease, .2s box-shadow ease, .2s background ease;
+      color:var(--white);
+      box-shadow: var(--shadow);
+    }
+    .btn--admin{
+      background:linear-gradient(135deg, rgba(125,249,255,.2), rgba(189,52,254,.22));
+      border:1px solid rgba(125,249,255,.45);
+    }
+    .btn--resident{
+      background:linear-gradient(135deg, rgba(18,247,214,.22), rgba(125,249,255,.18));
+      border:1px solid rgba(18,247,214,.5);
+    }
+    .btn:hover{transform: translateY(-2px)}
+    .btn:active{transform: translateY(0)}
+
+    /* Secciones */
+    section{padding:70px 0; border-top:1px solid var(--line)}
+    h2.section-title{
+      font-size: clamp(1.4rem, 3vw, 2rem); margin:0 0 14px;
+    }
+    .sub{
+      color:var(--muted); margin:0 0 26px; max-width: 820px;
+    }
+
+    /* Qué hacemos */
+    .cards{
+      display:grid; grid-template-columns:repeat(12,1fr); gap:18px;
+    }
+    .card{
+      grid-column: span 6; /* 2 por fila en desktop */
+      background: linear-gradient(180deg, var(--glass), transparent 140%);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding:20px; min-height: 140px;
+      box-shadow: var(--shadow);
+      position:relative; overflow:hidden;
+    }
+    .card:before{
+      content:""; position:absolute; inset:-1px; border-radius:inherit;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(125,249,255,.22), rgba(189,52,254,.18), rgba(18,247,214,.2), transparent 60%);
+      filter: blur(30px); opacity:.35; pointer-events:none;
+    }
+    .card h3{margin:6px 0 8px; font-size:1.05rem}
+    .card p{margin:0; color:var(--muted)}
+    .chip{
+      display:inline-block; font-size:.78rem; color:#000;
+      background:linear-gradient(90deg, var(--neon), var(--accent));
+      padding:6px 10px; border-radius:999px; font-weight:800; letter-spacing:.2px;
+      mix-blend-mode: screen;
+    }
+
+    /* Servicios */
+    .services{
+      display:grid; grid-template-columns:repeat(12,1fr); gap:18px;
+    }
+    .service{
+      grid-column: span 4;
+      background: var(--card);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding:22px; min-height:160px;
+      position:relative; overflow:hidden;
+    }
+    .service h4{margin:4px 0 6px}
+    .service p{margin:0; color:var(--muted)}
+    .service .glow{
+      position:absolute; width:140px; height:140px; right:-30px; bottom:-30px;
+      background: radial-gradient(circle, rgba(125,249,255,.28), transparent 60%);
+      filter: blur(10px);
+    }
+
+    /* Login panels */
+    .login-panels{
+      display:grid; grid-template-columns: repeat(12,1fr); gap:18px;
+    }
+    .panel{
+      grid-column: span 6;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      padding:28px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .panel .txt{max-width:70%}
+    .panel .txt h3{margin:0 0 6px}
+    .panel .txt p{margin:0; color:var(--muted)}
+    .panel .btn{white-space:nowrap}
+
+    /* Footer */
+    footer{padding:40px 0; border-top:1px solid var(--line); color:var(--muted); text-align:center}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .card, .panel{grid-column: span 12}
+      .service{grid-column: span 6}
+      .panel{flex-direction:column; align-items:flex-start}
+      .panel .txt{max-width:100%}
+    }
+    @media (max-width:640px){
+      .service{grid-column: span 12}
+      .cta{flex-direction:column}
+      .btn{width:100%; text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="grid"></div>
+
+  <header>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <div class="brand">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 20V9l8-5 8 5v11H4Z" stroke="url(#g)" stroke-width="2"/><defs><linearGradient id="g" x1="0" x2="24" y1="0" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#7df9ff"/><stop offset="1" stop-color="#bd34fe"/></linearGradient></defs>
+        </svg>
+        CYBERHOLE CONDOMINIOS
+      </div>
+      <nav style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="#hacemos">Qué hacemos</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#ingresos">Ingresar</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero container" id="top">
+    <span class="badge"><span class="dot"></span> CRM integral para comunidades modernas</span>
+    <h1>Gestión <span class="neon">administrativa, financiera</span> y <span class="neon">accesos físicos</span> en un solo lugar</h1>
+    <p>Centraliza cuotas, servicios, compras, inventarios, contabilidad ligera, control de accesos (tags/QR/engomados) y reportes claros para administradores y residentes.</p>
+    <div class="cta">
+      <a class="btn btn--admin" href="login_admin.html">Ingresar como Administrador</a>
+      <a class="btn btn--resident" href="login_residente.html">Ingresar como Residente</a>
+    </div>
+  </section>
+
+  <section id="hacemos">
+    <div class="container">
+      <h2 class="section-title">Qué hacemos</h2>
+      <p class="sub">Automatizamos la operación del condominio, desde la cobranza de cuotas y servicios hasta compras e inventarios, con trazabilidad y control de accesos en tiempo real.</p>
+
+      <div class="cards">
+        <article class="card">
+          <span class="chip">Administración</span>
+          <h3>Operación del condominio</h3>
+          <p>Calles, casas, empleados, tareas y comunicación con residentes. Permisos por rol y bitácoras.</p>
+        </article>
+
+        <article class="card">
+          <span class="chip">Finanzas</span>
+          <h3>Cobranza y conciliación</h3>
+          <p>Cuotas recurrentes, morosidad, estados de cuenta y reportes; soporte para recordatorios y prorrateos.</p>
+        </article>
+
+        <article class="card">
+          <span class="chip">Contable</span>
+          <h3>Contabilidad ligera</h3>
+          <p>Asientos básicos, categorías, centros de costo y exportes para tu contador.</p>
+        </article>
+
+        <article class="card">
+          <span class="chip">Accesos</span>
+          <h3>Control físico</h3>
+          <p>Visitas, tags, engomados y códigos QR; entradas/salidas auditadas en tiempo real.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="container">
+      <h2 class="section-title">Servicios</h2>
+      <p class="sub">Módulos que puedes activar según las necesidades de tu condominio.</p>
+
+      <div class="services">
+        <div class="service">
+          <h4>Gestiones administrativas</h4>
+          <p>Condominios, calles, casas, residentes, empleados y tareas con flujos aprobatorios.</p>
+          <div class="glow"></div>
+        </div>
+        <div class="service">
+          <h4>Cobro de cuotas</h4>
+          <p>Recurrencia, recargos, convenios de pago, estados de cuenta y reportes por periodo.</p>
+          <div class="glow"></div>
+        </div>
+        <div class="service">
+          <h4>Cobro de servicios</h4>
+          <p>Servicios internos/externos, tarifas, consumos y facturación opcional.</p>
+          <div class="glow"></div>
+        </div>
+        <div class="service">
+          <h4>Compras & inventarios</h4>
+          <p>OC, recepción, existencias, consumos por área y kardex simple.</p>
+          <div class="glow"></div>
+        </div>
+        <div class="service">
+          <h4>Contable</h4>
+          <p>Clasificación de ingresos/egresos, centros de costo y exportes a CSV/Excel.</p>
+          <div class="glow"></div>
+        </div>
+        <div class="service">
+          <h4>Accesos físicos</h4>
+          <p>Autorizaciones, listas, QR/tags/engomados, bitácoras y analítica básica.</p>
+          <div class="glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ingresos">
+    <div class="container">
+      <h2 class="section-title">Ingresar</h2>
+      <p class="sub">Elige tu perfil para continuar.</p>
+
+      <div class="login-panels">
+        <div class="panel">
+          <div class="txt">
+            <h3>Ingresa Residente</h3>
+            <p>Consulta tus estados de cuenta, paga cuotas y gestiona tus accesos y servicios.</p>
+          </div>
+          <a class="btn btn--resident" href="login_residente.html">Entrar como Residente</a>
+        </div>
+
+        <div class="panel">
+          <div class="txt">
+            <h3>Ingresa Administrador</h3>
+            <p>Administra finanzas, compras, inventarios, accesos y la operación completa.</p>
+          </div>
+          <a class="btn btn--admin" href="login_admin.html">Entrar como Administrador</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© 2025 Cyberhole Condominios — Todos los derechos reservados.</div>
+  </footer>
+
+  <script>
+    // micro-animación de aparición al hacer scroll
+    const reveal = (els)=> els.forEach(el=>{
+      el.style.opacity=0; el.style.transform='translateY(14px)';
+      const io = new IntersectionObserver(([e])=>{
+        if(e.isIntersecting){
+          el.style.transition='opacity .5s ease, transform .5s ease';
+          el.style.opacity=1; el.style.transform='translateY(0)';
+          io.disconnect();
+        }
+      },{threshold:.16});
+      io.observe(el);
+    });
+    reveal(document.querySelectorAll('.card, .service, .panel'));
+  </script>
+</body>
+</html>
+
