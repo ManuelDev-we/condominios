@@ -1,11 +1,11 @@
 <?php
 /**
- * 🔐 Configuración de Encriptación
- * Manejo seguro de encriptación AES y funciones criptográficas
+ * 🔐 ENCRYPTION CLEAN - Sistema de Encriptación Simplificado y Seguro
+ * Funcionalidades específicas: SHA hash, AES-256, password check, array encryption
  * 
  * @package Cyberhole\Configuration
  * @author ManuelDev
- * @version 1.0
+ * @version 2.0 CLEAN
  */
 
 require_once __DIR__ . '/env.php';
@@ -13,368 +13,341 @@ require_once __DIR__ . '/env.php';
 class EncryptionConfig 
 {
     private static $config = null;
+    private static $key = null;
+    private static $pepper = null;
     
     /**
-     * Obtener configuración de encriptación
+     * Inicializar configuración de encriptación
      */
-    public static function getConfig(): array 
+    private static function init(): void 
     {
         if (self::$config === null) {
             self::$config = EnvironmentConfig::getEncryptionConfig();
+            
+            // Generar clave AES-256 desde configuración
+            $secretKey = self::$config['secret_key'] ?? 'cyberhole_default_secret_2025';
+            self::$key = hash('sha256', $secretKey, true); // 32 bytes para AES-256
+            
+            // Pepper para passwords
+            self::$pepper = self::$config['pepper'] ?? 'cyberhole_pepper_secret_2025';
         }
-        return self::$config;
     }
     
     /**
-     * Encriptar datos usando AES
+     * Hash SHA-256 para datos generales
      */
-    public static function encrypt(string $data): string 
+    public static function hashSHA(string $data): string 
     {
-        $config = self::getConfig();
+        self::init();
+        return hash('sha256', $data);
+    }
+    
+    /**
+     * Hash seguro de contraseñas con pepper
+     */
+    public static function hashPassword(string $password): string 
+    {
+        self::init();
+        
+        // Agregar pepper y usar password_hash con costo alto
+        $pepperedPassword = $password . self::$pepper;
+        return password_hash($pepperedPassword, PASSWORD_ARGON2ID, [
+            'memory_cost' => 65536,  // 64 MB
+            'time_cost' => 4,        // 4 iteraciones
+            'threads' => 3           // 3 threads
+        ]);
+    }
+    
+    /**
+     * Verificar contraseña con pepper
+     */
+    public static function checkPassword(string $password, string $hash): bool 
+    {
+        self::init();
         
         try {
-            // Verificar método disponible
-            $method = $config['aes_method'];
-            $availableMethods = openssl_get_cipher_methods();
+            $pepperedPassword = $password . self::$pepper;
+            return password_verify($pepperedPassword, $hash);
+        } catch (Exception $e) {
+            error_log("Password verification error: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Encriptar con AES-256-CBC
+     */
+    public static function encryptAES256(string $data): string 
+    {
+        self::init();
+        
+        try {
+            $cipher = 'AES-256-CBC';
+            $ivLength = openssl_cipher_iv_length($cipher);
+            $iv = openssl_random_pseudo_bytes($ivLength);
             
-            if (!in_array($method, $availableMethods)) {
-                // Usar método alternativo si no está disponible
-                $alternatives = ['aes-256-cbc', 'AES-256-CBC', 'aes256'];
-                foreach ($alternatives as $alt) {
-                    if (in_array($alt, $availableMethods)) {
-                        $method = $alt;
-                        break;
-                    }
-                }
-            }
-            
-            // Generar IV aleatorio
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
-            
-            // Encriptar datos
-            $encrypted = openssl_encrypt($data, $method, $config['aes_key'], 0, $iv);
+            $encrypted = openssl_encrypt($data, $cipher, self::$key, OPENSSL_RAW_DATA, $iv);
             
             if ($encrypted === false) {
-                throw new Exception("Error en encriptación AES");
+                throw new Exception('Error en encriptación AES-256');
             }
             
             // Combinar IV + datos encriptados y codificar en base64
             return base64_encode($iv . $encrypted);
             
         } catch (Exception $e) {
-            error_log("Encryption error: " . $e->getMessage());
+            error_log("AES-256 encryption error: " . $e->getMessage());
             throw new Exception("Error al encriptar datos: " . $e->getMessage());
         }
     }
     
     /**
-     * Desencriptar datos usando AES
+     * Desencriptar con AES-256-CBC
      */
-    public static function decrypt(string $encryptedData): string 
+    public static function decryptAES256(string $encryptedData): string 
     {
-        $config = self::getConfig();
+        self::init();
         
         try {
-            // Verificar método disponible
-            $method = $config['aes_method'];
-            $availableMethods = openssl_get_cipher_methods();
-            
-            if (!in_array($method, $availableMethods)) {
-                // Usar método alternativo si no está disponible
-                $alternatives = ['aes-256-cbc', 'AES-256-CBC', 'aes256'];
-                foreach ($alternatives as $alt) {
-                    if (in_array($alt, $availableMethods)) {
-                        $method = $alt;
-                        break;
-                    }
-                }
-            }
-            
-            // Decodificar base64
+            $cipher = 'AES-256-CBC';
             $data = base64_decode($encryptedData);
             
             if ($data === false) {
-                throw new Exception("Datos encriptados inválidos");
+                throw new Exception('Datos base64 inválidos');
             }
             
-            // Extraer IV
-            $ivLength = openssl_cipher_iv_length($method);
-            $iv = substr($data, 0, $ivLength);
+            $ivLength = openssl_cipher_iv_length($cipher);
             
-            // Extraer datos encriptados
+            if (strlen($data) < $ivLength) {
+                throw new Exception('Datos encriptados demasiado cortos');
+            }
+            
+            $iv = substr($data, 0, $ivLength);
             $encrypted = substr($data, $ivLength);
             
-            // Desencriptar
-            $decrypted = openssl_decrypt($encrypted, $method, $config['aes_key'], 0, $iv);
+            $decrypted = openssl_decrypt($encrypted, $cipher, self::$key, OPENSSL_RAW_DATA, $iv);
             
             if ($decrypted === false) {
-                throw new Exception("Error en desencriptación AES");
+                throw new Exception('Error en desencriptación AES-256');
             }
             
             return $decrypted;
             
         } catch (Exception $e) {
-            error_log("Decryption error: " . $e->getMessage());
+            error_log("AES-256 decryption error: " . $e->getMessage());
             throw new Exception("Error al desencriptar datos: " . $e->getMessage());
         }
     }
     
     /**
-     * Generar hash seguro usando Cyberhole encryption key
+     * Encriptar array completo
      */
-    public static function hash(string $data): string 
-    {
-        $config = self::getConfig();
-        return hash_hmac('sha256', $data, $config['cyberhole_encryption_key']);
-    }
-    
-    /**
-     * Verificar hash
-     */
-    public static function verifyHash(string $data, string $hash): bool 
-    {
-        $expectedHash = self::hash($data);
-        return hash_equals($expectedHash, $hash);
-    }
-    
-    /**
-     * Generar token seguro aleatorio
-     */
-    public static function generateToken(int $length = 32): string 
+    public static function encryptArray(array $data): string 
     {
         try {
-            $bytes = openssl_random_pseudo_bytes($length, $strong);
+            $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE);
             
-            if (!$strong) {
-                throw new Exception("No se pudo generar token seguro");
+            if ($jsonData === false) {
+                throw new Exception('Error al convertir array a JSON');
             }
             
-            return bin2hex($bytes);
+            return self::encryptAES256($jsonData);
             
         } catch (Exception $e) {
-            error_log("Token generation error: " . $e->getMessage());
-            throw new Exception("Error al generar token: " . $e->getMessage());
+            error_log("Array encryption error: " . $e->getMessage());
+            throw new Exception("Error al encriptar array: " . $e->getMessage());
         }
     }
     
     /**
-     * Encriptar password con pepper adicional
+     * Desencriptar array
      */
-    public static function hashPassword(string $password): string 
-    {
-        return EnvironmentConfig::hashPassword($password);
-    }
-    
-    /**
-     * Verificar password con pepper
-     */
-    public static function verifyPassword(string $password, string $hash): bool 
-    {
-        return EnvironmentConfig::verifyPassword($password, $hash);
-    }
-    
-    /**
-     * Generar clave AES segura
-     */
-    public static function generateAESKey(): string 
+    public static function decryptArray(string $encryptedData): array 
     {
         try {
-            return bin2hex(openssl_random_pseudo_bytes(16)); // 32 caracteres hex = 16 bytes
+            $jsonData = self::decryptAES256($encryptedData);
+            $data = json_decode($jsonData, true);
+            
+            if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('Error al convertir JSON a array: ' . json_last_error_msg());
+            }
+            
+            return $data;
+            
         } catch (Exception $e) {
-            error_log("AES key generation error: " . $e->getMessage());
-            throw new Exception("Error al generar clave AES: " . $e->getMessage());
+            error_log("Array decryption error: " . $e->getMessage());
+            throw new Exception("Error al desencriptar array: " . $e->getMessage());
         }
     }
     
     /**
-     * Validar integridad de configuración de encriptación
+     * Validar configuración de encriptación
      */
     public static function validateConfig(): bool 
     {
         try {
-            $config = self::getConfig();
+            self::init();
             
-            // Verificar longitud de clave AES
-            if (strlen($config['aes_key']) !== 32) {
-                throw new Exception("Clave AES debe tener 32 caracteres");
+            // Verificar que OpenSSL esté disponible
+            if (!extension_loaded('openssl')) {
+                throw new Exception('Extensión OpenSSL no disponible');
             }
             
-            // Verificar método de encriptación válido
-            $availableMethods = openssl_get_cipher_methods();
-            $method = $config['aes_method'];
-            
-            // Si AES-256-CBC no está disponible, usar una alternativa
-            if (!in_array($method, $availableMethods)) {
-                // Probar métodos alternativos
-                $alternatives = ['aes-256-cbc', 'AES-256-CBC', 'aes256'];
-                $methodFound = false;
-                
-                foreach ($alternatives as $alt) {
-                    if (in_array($alt, $availableMethods)) {
-                        $method = $alt;
-                        $methodFound = true;
-                        break;
-                    }
-                }
-                
-                if (!$methodFound) {
-                    throw new Exception("No hay métodos de encriptación AES disponibles");
-                }
+            // Verificar que AES-256-CBC esté soportado
+            $cipherMethods = openssl_get_cipher_methods();
+            if (!in_array('AES-256-CBC', $cipherMethods) && !in_array('aes-256-cbc', $cipherMethods)) {
+                throw new Exception('Cipher AES-256-CBC no soportado');
             }
             
-            // Probar encriptación/desencriptación
-            $testData = "test_encryption_" . time();
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($method));
-            $encrypted = openssl_encrypt($testData, $method, $config['aes_key'], 0, $iv);
+            // Test rápido de encriptación/desencriptación
+            $testData = 'test_validation_data_2025';
+            $encrypted = self::encryptAES256($testData);
+            $decrypted = self::decryptAES256($encrypted);
             
-            if ($encrypted === false) {
-                throw new Exception("Error en prueba de encriptación");
+            if ($decrypted !== $testData) {
+                throw new Exception('Test de encriptación/desencriptación falló');
             }
             
-            $decrypted = openssl_decrypt($encrypted, $method, $config['aes_key'], 0, $iv);
+            // Test de array
+            $testArray = ['test' => 'data', 'number' => 123];
+            $encryptedArray = self::encryptArray($testArray);
+            $decryptedArray = self::decryptArray($encryptedArray);
             
-            if ($testData !== $decrypted) {
-                throw new Exception("Prueba de encriptación/desencriptación falló");
+            if ($decryptedArray !== $testArray) {
+                throw new Exception('Test de array encryption falló');
+            }
+            
+            // Test de password
+            $testPassword = 'test_password_123';
+            $hash = self::hashPassword($testPassword);
+            $isValid = self::checkPassword($testPassword, $hash);
+            
+            if (!$isValid) {
+                throw new Exception('Test de password hash falló');
             }
             
             return true;
             
         } catch (Exception $e) {
-            error_log("Encryption config validation error: " . $e->getMessage());
+            error_log("Encryption validation error: " . $e->getMessage());
             return false;
         }
     }
     
     /**
-     * Encriptar datos sensibles para almacenamiento en base de datos
+     * Obtener información de configuración (sin datos sensibles)
      */
-    public static function encryptForDatabase(string $data): string 
+    public static function getConfigInfo(): array 
     {
-        // Usar hash adicional para mayor seguridad en BD
-        $hashedData = self::hash($data) . '|' . $data;
-        return self::encrypt($hashedData);
+        self::init();
+        
+        return [
+            'cipher' => 'AES-256-CBC',
+            'hash_algorithm' => 'SHA-256',
+            'password_algorithm' => 'ARGON2ID',
+            'openssl_available' => extension_loaded('openssl'),
+            'key_length' => strlen(self::$key),
+            'pepper_configured' => !empty(self::$pepper),
+            'config_loaded' => self::$config !== null
+        ];
     }
     
     /**
-     * Desencriptar datos de base de datos con verificación de integridad
+     * Generar clave aleatoria para tokens
      */
-    public static function decryptFromDatabase(string $encryptedData): string 
+    public static function generateRandomKey(int $length = 32): string 
     {
         try {
-            $decrypted = self::decrypt($encryptedData);
-            
-            // Verificar integridad
-            if (strpos($decrypted, '|') === false) {
-                throw new Exception("Datos corruptos o formato inválido");
-            }
-            
-            list($hash, $originalData) = explode('|', $decrypted, 2);
-            
-            if (!self::verifyHash($originalData, $hash)) {
-                throw new Exception("Verificación de integridad falló");
-            }
-            
-            return $originalData;
-            
+            $randomBytes = openssl_random_pseudo_bytes($length);
+            return bin2hex($randomBytes);
         } catch (Exception $e) {
-            error_log("Database decryption error: " . $e->getMessage());
-            throw new Exception("Error al desencriptar datos de BD: " . $e->getMessage());
+            // Fallback
+            return bin2hex(random_bytes($length));
         }
     }
     
     /**
-     * Generar JWT para autenticación
+     * Generar token único
      */
-    public static function generateJWT(array $payload, int $expiration = null): string 
+    public static function generateToken(string $prefix = '', int $length = 16): string 
     {
-        $config = EnvironmentConfig::getSecurityConfig();
+        $randomPart = self::generateRandomKey($length);
+        $timestamp = time();
         
-        $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
-        
-        if ($expiration === null) {
-            $expiration = time() + $config['session_lifetime'];
+        if (!empty($prefix)) {
+            return strtoupper($prefix) . '_' . $timestamp . '_' . strtoupper($randomPart);
         }
         
-        $payload['exp'] = $expiration;
-        $payload['iat'] = time();
-        $payloadJson = json_encode($payload);
-        
-        $base64Header = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
-        $base64Payload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payloadJson));
-        
-        $signature = hash_hmac('sha256', $base64Header . "." . $base64Payload, $config['jwt_secret'], true);
-        $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
-        
-        return $base64Header . "." . $base64Payload . "." . $base64Signature;
+        return $timestamp . '_' . strtoupper($randomPart);
     }
     
     /**
-     * Verificar y decodificar JWT
+     * Limpiar datos sensibles de memoria (best effort)
      */
-    public static function verifyJWT(string $jwt): array 
+    public static function clearSensitiveData(): void 
     {
-        $config = EnvironmentConfig::getSecurityConfig();
-        
-        $parts = explode('.', $jwt);
-        
-        if (count($parts) !== 3) {
-            throw new Exception("JWT formato inválido");
+        if (self::$key !== null) {
+            self::$key = str_repeat("\0", strlen(self::$key));
+            self::$key = null;
         }
         
-        list($base64Header, $base64Payload, $base64Signature) = $parts;
-        
-        // Verificar firma
-        $signature = hash_hmac('sha256', $base64Header . "." . $base64Payload, $config['jwt_secret'], true);
-        $expectedSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
-        
-        if (!hash_equals($expectedSignature, $base64Signature)) {
-            throw new Exception("JWT firma inválida");
+        if (self::$pepper !== null) {
+            self::$pepper = str_repeat("\0", strlen(self::$pepper));
+            self::$pepper = null;
         }
         
-        // Decodificar payload
-        $payload = json_decode(base64_decode(str_replace(['-', '_'], ['+', '/'], $base64Payload)), true);
-        
-        // Verificar expiración
-        if (isset($payload['exp']) && $payload['exp'] < time()) {
-            throw new Exception("JWT expirado");
-        }
-        
-        return $payload;
+        self::$config = null;
+    }
+    
+    /**
+     * Destructor para limpiar memoria
+     */
+    public function __destruct() 
+    {
+        self::clearSensitiveData();
     }
 }
 
-// Funciones helper para compatibilidad (solo si no existen)
-if (!function_exists('encrypt_data')) {
-    function encrypt_data(string $data): string 
+// Funciones helper para compatibilidad
+if (!function_exists('cyberhole_hash_password')) {
+    function cyberhole_hash_password(string $password): string 
     {
-        return EncryptionConfig::encrypt($data);
+        return EncryptionConfig::hashPassword($password);
     }
 }
 
-if (!function_exists('decrypt_data')) {
-    function decrypt_data(string $encryptedData): string 
+if (!function_exists('cyberhole_check_password')) {
+    function cyberhole_check_password(string $password, string $hash): bool 
     {
-        return EncryptionConfig::decrypt($encryptedData);
+        return EncryptionConfig::checkPassword($password, $hash);
     }
 }
 
-if (!function_exists('generate_token')) {
-    function generate_token(int $length = 32): string 
+if (!function_exists('cyberhole_encrypt')) {
+    function cyberhole_encrypt(string $data): string 
     {
-        return EncryptionConfig::generateToken($length);
+        return EncryptionConfig::encryptAES256($data);
     }
 }
 
-if (!function_exists('hash_data')) {
-    function hash_data(string $data): string 
+if (!function_exists('cyberhole_decrypt')) {
+    function cyberhole_decrypt(string $encryptedData): string 
     {
-        return EncryptionConfig::hash($data);
+        return EncryptionConfig::decryptAES256($encryptedData);
     }
 }
 
-if (!function_exists('verify_hash')) {
-    function verify_hash(string $data, string $hash): bool 
+if (!function_exists('cyberhole_encrypt_array')) {
+    function cyberhole_encrypt_array(array $data): string 
     {
-        return EncryptionConfig::verifyHash($data, $hash);
+        return EncryptionConfig::encryptArray($data);
     }
 }
+
+if (!function_exists('cyberhole_decrypt_array')) {
+    function cyberhole_decrypt_array(string $encryptedData): array 
+    {
+        return EncryptionConfig::decryptArray($encryptedData);
+    }
+}
+?>

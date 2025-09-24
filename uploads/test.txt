@@ -1,0 +1,4 @@
+Este es un archivo de texto de prueba.
+Contiene varias líneas.
+Y algunos caracteres especiales: áéíóú
+¡Hola mundo!

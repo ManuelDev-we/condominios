@@ -89,7 +89,8 @@ class EnvironmentConfig
             'username' => self::getRequired('DB_USERNAME'),
             'password' => self::getRequired('DB_PASSWORD'),
             'charset' => self::get('DB_CHARSET', 'utf8mb4'),
-            'collation' => self::get('DB_COLLATION', 'utf8mb4_unicode_ci')
+            'collation' => self::get('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'port' => (int)self::get('DB_PORT', 3306)
         ];
     }
     

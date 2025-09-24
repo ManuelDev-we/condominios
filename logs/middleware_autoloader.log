@@ -1,0 +1,6 @@
+{"timestamp":"2025-09-22 04:47:10","level":"INFO","message":"\u2705 Configuraci\u00f3n PSR-4 cargada: 4 middlewares disponibles","memory_usage":2097152,"loaded_classes":0}
+{"timestamp":"2025-09-22 04:47:10","level":"INFO","message":"\ud83d\udd27 Autoloader PSR-4 registrado","memory_usage":2097152,"loaded_classes":0}
+{"timestamp":"2025-09-22 04:47:10","level":"ERROR","message":"\u274c Archivo no encontrado: C:\\xampp\\htdocs\\Cyberhole_condominios\\Cond_verFInal\\middlewares\\Security\/..\/middlewares\/Protections\/GeoFirewall.php","memory_usage":2097152,"loaded_classes":0}
+{"timestamp":"2025-09-22 04:47:10","level":"ERROR","message":"\u274c Archivo no encontrado: C:\\xampp\\htdocs\\Cyberhole_condominios\\Cond_verFInal\\middlewares\\Security\/..\/middlewares\/Protections\/GeoFirewall.php","memory_usage":2097152,"loaded_classes":0}
+{"timestamp":"2025-09-22 04:47:10","level":"ERROR","message":"\u274c Archivo no encontrado: C:\\xampp\\htdocs\\Cyberhole_condominios\\Cond_verFInal\\middlewares\\Security\/..\/middlewares\/Security\/RateLimiter.php","memory_usage":2097152,"loaded_classes":0}
+{"timestamp":"2025-09-22 04:47:10","level":"ERROR","message":"\u274c Archivo no encontrado: C:\\xampp\\htdocs\\Cyberhole_condominios\\Cond_verFInal\\middlewares\\Security\/..\/middlewares\/Protections\/GeoFirewall.php","memory_usage":2097152,"loaded_classes":0}

@@ -1,0 +1,14 @@
+{"timestamp":"2025-09-23 23:58:54","level":"INFO","message":"\ud83c\udf0d GeoFirewall integrado exitosamente via PSR-4","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:58:54","level":"INFO","message":"\ud83d\udea6 RateLimiter middleware inicializado con integraci\u00f3n geogr\u00e1fica PSR-4","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:15","level":"INFO","message":"\ud83c\udf0d GeoFirewall integrado exitosamente via PSR-4","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"INFO","message":"\ud83d\udea6 RateLimiter middleware inicializado con integraci\u00f3n geogr\u00e1fica PSR-4","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"INFO","message":"\u2705 Verificaci\u00f3n geogr\u00e1fica: IP de desarrollo autorizada","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"WARNING","message":"\ud83d\udeab IP penalizada: 127.0.0.1 - Bot detectado: Sin User-Agent (bloqueo: 15 min)","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"INFO","message":"\u2705 Verificaci\u00f3n geogr\u00e1fica: IP de desarrollo autorizada","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"WARNING","message":"\ud83d\udeab IP bloqueada: 127.0.0.1 - Bot detectado: Sin User-Agent","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"INFO","message":"\u2705 Verificaci\u00f3n geogr\u00e1fica: IP de desarrollo autorizada","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"WARNING","message":"\ud83d\udeab IP bloqueada: 127.0.0.1 - Bot detectado: Sin User-Agent","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"INFO","message":"\u2705 Verificaci\u00f3n geogr\u00e1fica: IP de desarrollo autorizada","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"WARNING","message":"\ud83d\udeab IP bloqueada: 127.0.0.1 - Bot detectado: Sin User-Agent","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"INFO","message":"\u2705 Verificaci\u00f3n geogr\u00e1fica: IP de desarrollo autorizada","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}
+{"timestamp":"2025-09-23 23:59:16","level":"WARNING","message":"\ud83d\udeab IP bloqueada: 127.0.0.1 - Bot detectado: Sin User-Agent","ip":"127.0.0.1","user_agent":"Unknown","request_uri":"\/","method":"GET"}

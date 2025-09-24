@@ -1,0 +1,282 @@
+{
+  "psr4_autoload": {
+    "description": "PSR-4 autoloader mapping for Cyberhole Condominios model classes",
+    "last_updated": "2025-09-21",
+    "version": "1.0.0",
+    "base_namespace": "Cyberhole\\Models"
+  },
+  "namespaces": {
+    "Cyberhole\\Models\\CrmLigero\\": "models/crm-ligero/",
+    "Cyberhole\\Models\\Cyberhole\\": "models/cyberhole/",
+    "Cyberhole\\Models\\Dispositivos\\": "models/dispositivos/",
+    "Cyberhole\\Models\\Entities\\": "models/entities/",
+    "Cyberhole\\Models\\Estructura\\": "models/estructura/",
+    "Cyberhole\\Models\\Financiero\\": "models/financiero/",
+    "Cyberhole\\Models\\Owners\\": "models/owners/",
+    "Cyberhole\\Models\\Servicios\\": "models/Servicios/"
+  },
+  "model_registry": {
+    "crm-ligero": {
+      "namespace": "Cyberhole\\Models\\CrmLigero",
+      "path": "models/crm-ligero/",
+      "models": [
+        {
+          "class": "BalanceGeneralModel",
+          "file": "BalanceGeneral-Model.php",
+          "description": "Balance general financial statements model",
+          "status": "empty_file"
+        },
+        {
+          "class": "CashFlowModel",
+          "file": "CashFlow-Model.php",
+          "description": "Cash flow management model",
+          "status": "empty_file"
+        },
+        {
+          "class": "EdoResultadosModel",
+          "file": "EdoResultados-Model.php",
+          "description": "Income statement and results model",
+          "status": "empty_file"
+        }
+      ]
+    },
+    "cyberhole": {
+      "namespace": "Cyberhole\\Models\\Cyberhole",
+      "path": "models/cyberhole/",
+      "models": [
+        {
+          "class": "CatalogoHardwareProveedores",
+          "file": "catalogo_hardware_proveedores.php",
+          "description": "Hardware provider catalog model"
+        },
+        {
+          "class": "FacturacionCyberhole",
+          "file": "facturacion-Cyberhole.php",
+          "description": "Cyberhole billing and invoicing model"
+        },
+        {
+          "class": "MantenimientoFisicos",
+          "file": "MantenimientoFisicos.php",
+          "description": "Physical maintenance management model"
+        },
+        {
+          "class": "PlanesModelCyberhole",
+          "file": "PlanesModelCyberhole.php",
+          "description": "Cyberhole service plans model"
+        },
+        {
+          "class": "SuscripcionesCyberhole",
+          "file": "SuscripcionesCyberhole.php",
+          "description": "Cyberhole subscriptions management model"
+        },
+        {
+          "class": "VentasEquiposFisicos",
+          "file": "ventas_equipos_fisicos.php",
+          "description": "Physical equipment sales model"
+        }
+      ]
+    },
+    "dispositivos": {
+      "namespace": "Cyberhole\\Models\\Dispositivos",
+      "path": "models/dispositivos/",
+      "models": [
+        {
+          "class": "EngomadoModel",
+          "file": "Engomado-Model.php",
+          "description": "Vehicle sticker/registration model"
+        },
+        {
+          "class": "PersonaUnidadModel",
+          "file": "PersonaUnidad-Model.php",
+          "description": "Person-unit relationship model"
+        },
+        {
+          "class": "TagModel",
+          "file": "Tag-Model.php",
+          "description": "Access tag management model"
+        }
+      ]
+    },
+    "entities": {
+      "namespace": "Cyberhole\\Models\\Entities",
+      "path": "models/entities/",
+      "models": [
+        {
+          "class": "AdminUser",
+          "file": "admin-user.php",
+          "description": "System administrator user entity"
+        },
+        {
+          "class": "EmpleadosUser",
+          "file": "empleados-user.php",
+          "description": "Employee user entity"
+        },
+        {
+          "class": "PersonaUser",
+          "file": "persona-user.php",
+          "description": "Resident person user entity"
+        },
+        {
+          "class": "ProveedoresCyberhole",
+          "file": "proveedores_cyberhole.php",
+          "description": "Cyberhole providers entity"
+        },
+        {
+          "class": "Vendedores",
+          "file": "vendedores.php",
+          "description": "Sales vendors entity"
+        }
+      ]
+    },
+    "estructura": {
+      "namespace": "Cyberhole\\Models\\Estructura",
+      "path": "models/estructura/",
+      "models": [
+        {
+          "class": "AreaComunModel",
+          "file": "AreaComun-Model.php",
+          "description": "Common areas management model"
+        },
+        {
+          "class": "CallesModel",
+          "file": "Calles-Model.php",
+          "description": "Streets management model"
+        },
+        {
+          "class": "CasasModel",
+          "file": "Casas-Model.php",
+          "description": "Houses/units management model"
+        },
+        {
+          "class": "CondominiosModels",
+          "file": "Condominios-Models.php",
+          "description": "Condominiums management model"
+        }
+      ]
+    },
+    "financiero": {
+      "namespace": "Cyberhole\\Models\\Financiero",
+      "path": "models/financiero/",
+      "models": [
+        {
+          "class": "CobrosAutorizadosModel",
+          "file": "CobrosAutorizados-Model.php",
+          "description": "Authorized charges management model"
+        },
+        {
+          "class": "ComprasModel",
+          "file": "Compras-Model.php",
+          "description": "Purchases management model"
+        },
+        {
+          "class": "CuotasModel",
+          "file": "Cuotas-Model.php",
+          "description": "Fees and quotas management model"
+        },
+        {
+          "class": "InventariosModel",
+          "file": "Inventarios-Model.php",
+          "description": "Inventory management model"
+        },
+        {
+          "class": "NominaModel",
+          "file": "Nomina-Model.php",
+          "description": "Payroll management model"
+        }
+      ]
+    },
+    "owners": {
+      "namespace": "Cyberhole\\Models\\Owners",
+      "path": "models/owners/",
+      "models": [
+        {
+          "class": "AdminCondModel",
+          "file": "AdminCond-Model.php",
+          "description": "Condominium administrator model"
+        },
+        {
+          "class": "ClavesRegistroModel",
+          "file": "ClavesRegistro-Model.php",
+          "description": "Registration keys management model"
+        },
+        {
+          "class": "PersonaCasaModel",
+          "file": "PersonaCasa-Model.php",
+          "description": "Person-house relationship model"
+        },
+        {
+          "class": "PersonaDispositivoModel",
+          "file": "PersonaDispositivo-Model.php",
+          "description": "Person-device relationship model"
+        },
+        {
+          "class": "VendorsCondominiosModel",
+          "file": "VendorsCondominios-Model.php",
+          "description": "Condominium vendors management model"
+        }
+      ]
+    },
+    "servicios": {
+      "namespace": "Cyberhole\\Models\\Servicios",
+      "path": "models/Servicios/",
+      "models": [
+        {
+          "class": "AccesoModel",
+          "file": "Acceso-Model.php",
+          "description": "Access control model"
+        },
+        {
+          "class": "AccesoEmpleadoModel",
+          "file": "AccesoEmpleado-Model.php",
+          "description": "Employee access control model"
+        },
+        {
+          "class": "ApartarAreasComunesModel",
+          "file": "ApartarAreasComunes-Model.php",
+          "description": "Common areas reservation model"
+        },
+        {
+          "class": "BlogModel",
+          "file": "Blog-Model.php",
+          "description": "Blog and news management model"
+        },
+        {
+          "class": "ServiciosModel",
+          "file": "Servicios-Model.php",
+          "description": "General services model"
+        },
+        {
+          "class": "ServiciosCondominiosModel",
+          "file": "ServiciosCondominios-Model.php",
+          "description": "Condominium services model"
+        },
+        {
+          "class": "ServiciosResidentesModel",
+          "file": "ServiciosResidentes-Model.php",
+          "description": "Resident services model"
+        },
+        {
+          "class": "TareasModel",
+          "file": "Tareas-Model.php",
+          "description": "Tasks management model"
+        },
+        {
+          "class": "VisitasModel",
+          "file": "Visitas-Model.php",
+          "description": "Visitor management model"
+        }
+      ]
+    }
+  },
+  "autoloader_config": {
+    "case_sensitive": false,
+    "file_extension": ".php",
+    "prepend": false,
+    "throw_exceptions": true
+  },
+  "dependency_injection": {
+    "container_interface": "Psr\\Container\\ContainerInterface",
+    "service_locator": "Cyberhole\\Services\\ServiceLocator",
+    "factory_pattern": true
+  }
+}

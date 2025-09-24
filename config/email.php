@@ -33,10 +33,31 @@ class EmailConfig
         $config = self::getConfig();
         
         try {
-            // Crear socket para probar conexión SMTP
-            $socket = @fsockopen($config['host'], $config['port'], $errno, $errstr, 10);
+            // Para SSL (puerto 465), usar contexto SSL
+            if ($config['port'] == 465 || $config['encryption'] === 'ssl') {
+                $context = stream_context_create([
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    ]
+                ]);
+                
+                $socket = @stream_socket_client(
+                    "ssl://{$config['host']}:{$config['port']}", 
+                    $errno, 
+                    $errstr, 
+                    30, 
+                    STREAM_CLIENT_CONNECT, 
+                    $context
+                );
+            } else {
+                // Para TLS (puerto 587) o conexión sin cifrado
+                $socket = @fsockopen($config['host'], $config['port'], $errno, $errstr, 10);
+            }
             
             if (!$socket) {
+                error_log("SMTP connection failed: $errstr ($errno)");
                 return false;
             }
             
@@ -45,7 +66,15 @@ class EmailConfig
             fclose($socket);
             
             // Verificar respuesta 220 (servicio listo)
-            return strpos($response, '220') === 0;
+            $isConnected = strpos($response, '220') === 0;
+            
+            if ($isConnected) {
+                error_log("SMTP connection successful: " . trim($response));
+            } else {
+                error_log("SMTP unexpected response: " . trim($response));
+            }
+            
+            return $isConnected;
             
         } catch (Exception $e) {
             error_log("Email connection test failed: " . $e->getMessage());
@@ -54,13 +83,17 @@ class EmailConfig
     }
     
     /**
-     * Enviar email básico
+     * Enviar email usando SMTP directo (más robusto que mail())
      */
-    public static function sendMail(string $to, string $subject, string $body, array $options = []): bool 
+    public static function sendSmtpEmail(string $to, string $subject, string $body, array $options = []): bool 
     {
         $config = self::getConfig();
         
         try {
+            // Configurar SMTP en tiempo de ejecución
+            ini_set('SMTP', $config['host']);
+            ini_set('smtp_port', $config['port']);
+            
             // Headers básicos
             $headers = [
                 'MIME-Version: 1.0',
@@ -81,8 +114,11 @@ class EmailConfig
             
             $headerString = implode("\r\n", $headers);
             
-            // Intentar envío
+            // Intentar envío con configuración actualizada
             $result = mail($to, $subject, $body, $headerString);
+            
+            // Log del resultado
+            self::logEmail($to, $subject, $result, $result ? '' : 'Error de envío SMTP');
             
             if ($result && EnvironmentConfig::isDebugMode()) {
                 error_log("Email sent successfully to: " . $to);
@@ -91,9 +127,20 @@ class EmailConfig
             return $result;
             
         } catch (Exception $e) {
-            error_log("Email sending failed: " . $e->getMessage());
+            $error = "Email sending failed: " . $e->getMessage();
+            error_log($error);
+            self::logEmail($to, $subject, false, $error);
             return false;
         }
+    }
+
+    /**
+     * Enviar email básico (mantener compatibilidad)
+     */
+    public static function sendMail(string $to, string $subject, string $body, array $options = []): bool 
+    {
+        // Usar la versión SMTP más robusta
+        return self::sendSmtpEmail($to, $subject, $body, $options);
     }
     
     /**
@@ -229,5 +276,3 @@ if (!function_exists('smtp_config')) {
         return EmailConfig::getSmtpConfig();
     }
 }
-
-?>

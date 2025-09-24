@@ -1,0 +1,8 @@
+{
+    "endpoint_limits": {
+        "test": {
+            "limit": 100,
+            "window": 60
+        }
+    }
+}

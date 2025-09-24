@@ -1,0 +1,23 @@
+{
+    "middlewares": {
+        "protections": {
+            "GeoFirewall": "middlewares/Protections/GeoFirewall.php"
+        },
+        "security": {
+            "HeaderHTTP": "middlewares/Security/HeaderHTTP.php",
+            "RateLimiter": "middlewares/Security/RateLimiter.php",
+            "InputSanitizer": "middlewares/Security/InputSanitizer.php"
+        }
+    },
+    "autoload": {
+        "enabled": true,
+        "namespace": "Cyberhole\\Middlewares",
+        "base_path": "middlewares/"
+    },
+    "dependencies": {
+        "RateLimiter": ["GeoFirewall"],
+        "HeaderHTTP": [],
+        "InputSanitizer": [],
+        "GeoFirewall": []
+    }
+}

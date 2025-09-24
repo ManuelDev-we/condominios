@@ -1,0 +1,549 @@
+{
+    "metadata": {
+        "version": "2.0.0",
+        "description": "Sistema Ultra Avanzado de Detección de Código Malicioso - Imposible de Evadir",
+        "last_updated": "2025-09-23",
+        "threat_level": "MAXIMUM_SECURITY",
+        "detection_layers": 7,
+        "machine_learning": true,
+        "heuristic_analysis": true,
+        "semantic_parsing": true
+    },
+    
+    "configuration": {
+        "strict_mode": true,
+        "zero_tolerance": true,
+        "deep_analysis": true,
+        "context_awareness": true,
+        "behavioral_analysis": true,
+        "entropy_detection": true,
+        "unicode_normalization": true,
+        "polyglot_detection": true
+    },
+    
+    "sql_injection": {
+        "description": "Patrones SQL ultra avanzados con detección heurística",
+        "severity": "CRITICAL",
+        "patterns": {
+            "basic_keywords": {
+                "description": "Palabras clave SQL básicas",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|JOIN)\\b",
+                    "\\b(TRUNCATE|REPLACE|MERGE|CALL|DO|HANDLER|LOAD|RENAME|REPAIR)\\b",
+                    "\\b(START|COMMIT|ROLLBACK|SAVEPOINT|RELEASE|LOCK|UNLOCK)\\b",
+                    "\\b(GRANT|REVOKE|DENY|BACKUP|RESTORE|ATTACH|DETACH)\\b"
+                ]
+            },
+            "advanced_functions": {
+                "description": "Funciones SQL peligrosas",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(SUBSTRING|CONCAT|CHAR|ASCII|CONVERT|CAST|COALESCE)\\b",
+                    "\\b(USER|DATABASE|VERSION|@@|SCHEMA|TABLE_NAME)\\b",
+                    "\\b(LOAD_FILE|INTO OUTFILE|INTO DUMPFILE|BENCHMARK)\\b",
+                    "\\b(SLEEP|WAITFOR|DELAY|PG_SLEEP|DBMS_PIPE)\\b",
+                    "\\b(XP_CMDSHELL|SP_CONFIGURE|OPENROWSET|OPENDATASOURCE)\\b"
+                ]
+            },
+            "injection_patterns": {
+                "description": "Patrones de inyección SQL",
+                "case_sensitive": false,
+                "patterns": [
+                    "('|\")\\s*;\\s*(--|\\/\\*|#)",
+                    "('|\")\\s*(OR|AND)\\s+('|\")?(\\w+|\\d+)('|\")\\s*(=|LIKE)\\s*('|\")?(\\w+|\\d+)",
+                    "\\d+\\s*(=|!=|<>|<|>)\\s*\\d+",
+                    "(\\w+)\\s+(OR|AND)\\s+(\\w+)",
+                    "\\b(TRUE|FALSE)\\b\\s*(OR|AND)\\s*\\b(TRUE|FALSE)\\b"
+                ]
+            },
+            "comment_evasion": {
+                "description": "Técnicas de evasión con comentarios",
+                "case_sensitive": false,
+                "patterns": [
+                    "--[\\s\\S]*$",
+                    "\\/\\*[\\s\\S]*?\\*\\/",
+                    "#[\\s\\S]*$",
+                    "\\/\\*![\\d]*[\\s\\S]*?\\*\\/",
+                    "\\s*\\/\\*\\s*\\*\\/\\s*"
+                ]
+            },
+            "obfuscation": {
+                "description": "Técnicas de ofuscación SQL",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(CHAR|CHR|ASCII)\\s*\\(\\s*\\d+\\s*(,\\s*\\d+)*\\s*\\)",
+                    "0x[0-9a-fA-F]+",
+                    "\\b(CONCAT|CONCAT_WS)\\s*\\(",
+                    "\\\\x[0-9a-fA-F]{2}",
+                    "%[0-9a-fA-F]{2}",
+                    "\\b(UNHEX|HEX|ENCODE|DECODE)\\b"
+                ]
+            },
+            "time_based": {
+                "description": "Inyecciones SQL basadas en tiempo",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(SLEEP|WAITFOR|DELAY|PG_SLEEP|BENCHMARK)\\s*\\(",
+                    "WAITFOR\\s+DELAY\\s+['\"]\\d{2}:\\d{2}:\\d{2}['\"]",
+                    "BENCHMARK\\s*\\(\\s*\\d+\\s*,",
+                    "SLEEP\\s*\\(\\s*\\d+\\s*\\)",
+                    "PG_SLEEP\\s*\\(\\s*\\d+\\s*\\)"
+                ]
+            },
+            "union_based": {
+                "description": "Inyecciones UNION avanzadas",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\bUNION\\b[\\s\\/\\*]*\\bSELECT\\b",
+                    "\\bUNION\\b[\\s\\/\\*]*\\bALL\\b[\\s\\/\\*]*\\bSELECT\\b",
+                    "\\+\\+UNION\\+\\+",
+                    "\\bUNION\\b.*\\bSELECT\\b.*\\bFROM\\b",
+                    "\\d+\\s+UNION\\s+SELECT"
+                ]
+            },
+            "information_gathering": {
+                "description": "Recopilación de información del sistema",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(INFORMATION_SCHEMA|SYS|SYSOBJECTS|SYSCOLUMNS)\\b",
+                    "\\b(TABLE_SCHEMA|COLUMN_NAME|TABLE_NAME)\\b",
+                    "\\b(SCHEMA_NAME|DATABASE_NAME|DB_NAME)\\b",
+                    "\\b(USER_NAME|SYSTEM_USER|SESSION_USER)\\b"
+                ]
+            }
+        }
+    },
+    
+    "xss_injection": {
+        "description": "Patrones XSS ultra sofisticados con detección semántica",
+        "severity": "HIGH",
+        "patterns": {
+            "script_tags": {
+                "description": "Tags de script y variaciones",
+                "case_sensitive": false,
+                "patterns": [
+                    "<\\s*script[^>]*>",
+                    "<\\/\\s*script\\s*>",
+                    "<\\s*SCRIPT[^>]*>",
+                    "<%\\s*script[^>]*%>",
+                    "&lt;script",
+                    "\\u003cscript",
+                    "\\x3cscript",
+                    "%3cscript"
+                ]
+            },
+            "javascript_protocols": {
+                "description": "Protocolos JavaScript peligrosos",
+                "case_sensitive": false,
+                "patterns": [
+                    "javascript\\s*:",
+                    "vbscript\\s*:",
+                    "data\\s*:[^,]*script",
+                    "data\\s*:text\\/html",
+                    "data\\s*:application\\/x-javascript"
+                ]
+            },
+            "event_handlers": {
+                "description": "Manejadores de eventos HTML",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\bon\\w+\\s*=",
+                    "\\bon(click|load|error|focus|blur|change|submit|mouseover|mouseout)\\s*=",
+                    "\\bon(keydown|keyup|keypress|resize|scroll|unload|beforeunload)\\s*=",
+                    "\\bon(dragstart|dragend|drop|dragover|dragenter|dragleave)\\s*=",
+                    "\\bon(touchstart|touchend|touchmove|touchcancel)\\s*="
+                ]
+            },
+            "dangerous_tags": {
+                "description": "Tags HTML peligrosos",
+                "case_sensitive": false,
+                "patterns": [
+                    "<\\s*(iframe|frame|frameset|object|embed|applet)\\b",
+                    "<\\s*(form|input|textarea|select|option)\\b",
+                    "<\\s*(link|style|meta)\\b",
+                    "<\\s*(svg|math|canvas)\\b",
+                    "<\\s*(video|audio|source|track)\\b"
+                ]
+            },
+            "javascript_functions": {
+                "description": "Funciones JavaScript peligrosas",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(eval|setTimeout|setInterval|Function|execScript)\\s*\\(",
+                    "\\b(alert|prompt|confirm|open|close)\\s*\\(",
+                    "\\b(document\\.(write|writeln|createElement|cookie))\\b",
+                    "\\b(window\\.(location|open|alert|eval))\\b",
+                    "\\b(location\\.(href|replace|assign))\\b"
+                ]
+            },
+            "encoding_evasion": {
+                "description": "Técnicas de evasión por codificación",
+                "case_sensitive": false,
+                "patterns": [
+                    "&#x?[0-9a-fA-F]+;",
+                    "%[0-9a-fA-F]{2}",
+                    "\\\\x[0-9a-fA-F]{2}",
+                    "\\\\u[0-9a-fA-F]{4}",
+                    "String\\.fromCharCode",
+                    "\\bunescape\\s*\\(",
+                    "\\bdecodeURI(Component)?\\s*\\("
+                ]
+            },
+            "expression_injection": {
+                "description": "Inyecciones en expresiones CSS y atributos",
+                "case_sensitive": false,
+                "patterns": [
+                    "expression\\s*\\(",
+                    "behavior\\s*:",
+                    "binding\\s*:",
+                    "-moz-binding\\s*:",
+                    "javascript\\s*:",
+                    "@import\\s*['\"]javascript:"
+                ]
+            }
+        }
+    },
+    
+    "php_injection": {
+        "description": "Patrones PHP ultra peligrosos con detección avanzada",
+        "severity": "CRITICAL",
+        "patterns": {
+            "php_tags": {
+                "description": "Tags PHP y variaciones",
+                "case_sensitive": false,
+                "patterns": [
+                    "<\\?php\\b",
+                    "<\\?\\s",
+                    "<%\\s",
+                    "\\?>",
+                    "%>",
+                    "<\\?=",
+                    "<%="
+                ]
+            },
+            "dangerous_functions": {
+                "description": "Funciones PHP extremadamente peligrosas",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(eval|exec|system|shell_exec|passthru|popen|proc_open)\\s*\\(",
+                    "\\b(file_get_contents|file_put_contents|fopen|fwrite|fread)\\s*\\(",
+                    "\\b(unlink|rmdir|mkdir|rename|copy|move_uploaded_file)\\s*\\(",
+                    "\\b(curl_exec|curl_init|fsockopen|stream_context_create)\\s*\\(",
+                    "\\b(mail|error_log|syslog|openlog)\\s*\\("
+                ]
+            },
+            "code_execution": {
+                "description": "Funciones de ejecución de código",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(call_user_func|call_user_func_array|create_function)\\s*\\(",
+                    "\\b(ReflectionFunction|ReflectionClass|ReflectionMethod)\\b",
+                    "\\b(assert|preg_replace)\\s*\\(",
+                    "\\$\\{[^}]*\\}",
+                    "\\$\\$\\w+",
+                    "\\b(include|require)(_once)?\\s*\\("
+                ]
+            },
+            "file_operations": {
+                "description": "Operaciones peligrosas con archivos",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(glob|scandir|readdir|opendir|is_dir|is_file)\\s*\\(",
+                    "\\b(pathinfo|dirname|basename|realpath)\\s*\\(",
+                    "\\b(file|readfile|highlight_file|show_source)\\s*\\(",
+                    "\\/etc\\/passwd|\\/etc\\/shadow|\\/proc\\/",
+                    "\\.\\.[\\/\\\\]",
+                    "php:\\/\\/(input|filter|memory|temp)"
+                ]
+            },
+            "obfuscation_techniques": {
+                "description": "Técnicas de ofuscación PHP",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(base64_decode|gzinflate|gzuncompress|str_rot13)\\s*\\(",
+                    "\\b(pack|unpack|convert_uuencode|convert_uudecode)\\s*\\(",
+                    "\\b(hex2bin|bin2hex|chr|ord)\\s*\\(",
+                    "\\$\\w+\\s*=\\s*['\"][a-zA-Z0-9+\\/=]+['\"];",
+                    "\\$[a-zA-Z_][\\w]*\\s*=\\s*\\$[a-zA-Z_][\\w]*\\s*\\."
+                ]
+            }
+        }
+    },
+    
+    "command_injection": {
+        "description": "Inyecciones de comandos del sistema",
+        "severity": "CRITICAL",
+        "patterns": {
+            "shell_metacharacters": {
+                "description": "Metacaracteres de shell peligrosos",
+                "case_sensitive": true,
+                "patterns": [
+                    "\\|",
+                    "&{1,2}",
+                    ";",
+                    "`",
+                    "\\$\\(",
+                    "\\$\\{",
+                    "\\>\\>?",
+                    "\\<\\<?",
+                    "\\*",
+                    "\\?",
+                    "\\[.*\\]"
+                ]
+            },
+            "system_commands": {
+                "description": "Comandos del sistema peligrosos",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\b(rm|del|rmdir|rd)\\b",
+                    "\\b(cat|type|more|less|head|tail)\\b",
+                    "\\b(ls|dir|find|locate)\\b",
+                    "\\b(ps|top|kill|killall|pkill)\\b",
+                    "\\b(whoami|id|pwd|uname|hostname)\\b",
+                    "\\b(netstat|ifconfig|iptables|route)\\b",
+                    "\\b(wget|curl|nc|telnet|ssh|ftp)\\b"
+                ]
+            },
+            "file_system_access": {
+                "description": "Acceso peligroso al sistema de archivos",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\/bin\\/",
+                    "\\/sbin\\/",
+                    "\\/usr\\/bin\\/",
+                    "\\/etc\\/",
+                    "\\/var\\/",
+                    "\\/tmp\\/",
+                    "C:\\\\Windows\\\\",
+                    "C:\\\\System32\\\\",
+                    "%SystemRoot%",
+                    "%TEMP%",
+                    "%WINDIR%"
+                ]
+            }
+        }
+    },
+    
+    "path_traversal": {
+        "description": "Ataques de path traversal",
+        "severity": "HIGH",
+        "patterns": {
+            "directory_traversal": {
+                "description": "Patrones de directory traversal",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\.\\.[\\/\\\\]",
+                    "\\.\\.%2f",
+                    "\\.\\.%5c",
+                    "%2e%2e%2f",
+                    "%2e%2e%5c",
+                    "\\.\\.\\\\",
+                    "..\\\\..\\\\",
+                    "..%252f",
+                    "..%255c"
+                ]
+            }
+        }
+    },
+    
+    "ldap_injection": {
+        "description": "Inyecciones LDAP",
+        "severity": "MEDIUM",
+        "patterns": {
+            "ldap_metacharacters": {
+                "description": "Metacaracteres LDAP peligrosos",
+                "case_sensitive": true,
+                "patterns": [
+                    "\\*",
+                    "\\(",
+                    "\\)",
+                    "\\\\",
+                    "\\x00",
+                    "\\/",
+                    "\\+",
+                    "\"",
+                    "'",
+                    "<",
+                    ">",
+                    ";"
+                ]
+            }
+        }
+    },
+    
+    "xml_injection": {
+        "description": "Inyecciones XML y XXE",
+        "severity": "HIGH",
+        "patterns": {
+            "xml_entities": {
+                "description": "Entidades XML peligrosas",
+                "case_sensitive": false,
+                "patterns": [
+                    "<!ENTITY",
+                    "<!DOCTYPE",
+                    "SYSTEM\\s+['\"]",
+                    "PUBLIC\\s+['\"]",
+                    "&\\w+;",
+                    "\\[\\s*<!ENTITY"
+                ]
+            }
+        }
+    },
+    
+    "nosql_injection": {
+        "description": "Inyecciones NoSQL (MongoDB, CouchDB, etc.)",
+        "severity": "HIGH",
+        "patterns": {
+            "mongodb_operators": {
+                "description": "Operadores MongoDB peligrosos",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\$ne",
+                    "\\$gt",
+                    "\\$lt",
+                    "\\$gte",
+                    "\\$lte",
+                    "\\$in",
+                    "\\$nin",
+                    "\\$or",
+                    "\\$and",
+                    "\\$not",
+                    "\\$nor",
+                    "\\$exists",
+                    "\\$type",
+                    "\\$mod",
+                    "\\$regex",
+                    "\\$text",
+                    "\\$where",
+                    "\\$expr",
+                    "\\$jsonSchema",
+                    "function\\s*\\(",
+                    "this\\."
+                ]
+            }
+        }
+    },
+    
+    "template_injection": {
+        "description": "Inyecciones en templates (SSTI)",
+        "severity": "HIGH",
+        "patterns": {
+            "template_syntax": {
+                "description": "Sintaxis de templates peligrosa",
+                "case_sensitive": false,
+                "patterns": [
+                    "\\{\\{.*\\}\\}",
+                    "\\{%.*%\\}",
+                    "\\{\\{.*\\|.*\\}\\}",
+                    "<%.*%>",
+                    "\\$\\{.*\\}",
+                    "#{.*}",
+                    "\\[%.*%\\]",
+                    "__import__",
+                    "__builtins__",
+                    "__globals__"
+                ]
+            }
+        }
+    },
+    
+    "deserialization": {
+        "description": "Ataques de deserialización peligrosos",
+        "severity": "CRITICAL",
+        "patterns": {
+            "serialized_objects": {
+                "description": "Objetos serializados peligrosos",
+                "case_sensitive": false,
+                "patterns": [
+                    "O:\\d+:",
+                    "a:\\d+:",
+                    "s:\\d+:",
+                    "i:\\d+;",
+                    "b:[01];",
+                    "N;",
+                    "r:\\d+;",
+                    "R:\\d+;",
+                    "__wakeup",
+                    "__destruct",
+                    "__toString",
+                    "__call",
+                    "__get",
+                    "__set"
+                ]
+            }
+        }
+    },
+    
+    "polyglot_attacks": {
+        "description": "Ataques políglotas que funcionan en múltiples contextos",
+        "severity": "CRITICAL",
+        "patterns": [
+            "javascript:/*--></title></style></textarea></script></xmp><svg/onload='+/*/`/*\\'>",
+            "/**/\\*;{}</style><img/src/onerror=alert(1)//",
+            "'/**/;DROP/**/TABLE/**/users;--",
+            "<script>\\*</script><img/src/onerror=alert(1)//>",
+            "';alert(String.fromCharCode(88,83,83))//';alert(String.fromCharCode(88,83,83))//",
+            "\"><script>alert('XSS')</script>",
+            "'><script>alert('XSS')</script>",
+            "javascript:alert('XSS')",
+            "<img src=x onerror=alert('XSS')>",
+            "<svg onload=alert('XSS')>"
+        ]
+    },
+    
+    "behavioral_patterns": {
+        "description": "Patrones de comportamiento sospechoso",
+        "severity": "MEDIUM",
+        "patterns": {
+            "suspicious_lengths": {
+                "description": "Longitudes sospechosas de input",
+                "max_length": 10000,
+                "min_suspicious_length": 1000
+            },
+            "suspicious_characters": {
+                "description": "Caracteres altamente sospechosos",
+                "patterns": [
+                    "\\x00-\\x08",
+                    "\\x0b",
+                    "\\x0c",
+                    "\\x0e-\\x1f",
+                    "\\x7f-\\x9f"
+                ]
+            },
+            "entropy_threshold": {
+                "description": "Umbral de entropía para detectar contenido ofuscado",
+                "threshold": 4.5,
+                "min_length": 50
+            },
+            "repetition_patterns": {
+                "description": "Patrones de repetición sospechosos",
+                "patterns": [
+                    "(.{1,10})\\1{10,}",
+                    "(\\w)\\1{50,}",
+                    "([A-Za-z0-9+\\/]{4}){20,}="
+                ]
+            }
+        }
+    },
+    
+    "encoding_detection": {
+        "description": "Detección de múltiples capas de encoding",
+        "severity": "HIGH",
+        "layers": [
+            "url_encoding",
+            "html_encoding",
+            "unicode_encoding",
+            "base64_encoding",
+            "hex_encoding",
+            "octal_encoding",
+            "double_encoding",
+            "mixed_encoding"
+        ],
+        "normalization": {
+            "unicode_normalization": "NFC",
+            "case_normalization": true,
+            "whitespace_normalization": true
+        }
+    }
+}
